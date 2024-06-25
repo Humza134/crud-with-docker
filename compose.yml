@@ -1,0 +1,34 @@
+version: "1.0.0"
+name: "fastapi"
+services: 
+  api:
+    build: 
+      context: ./crud
+      dockerfile: Dockerfile
+    volumes:
+      - ./crud:/code  # Sync local development directory with the container
+    ports:
+      - "8000:8000"
+    networks: 
+      - my-api-net
+    depends_on:
+      - postgres_db
+  postgres_db:
+    image: postgres:latest
+    restart: always
+    container_name: PostgresCont
+    environment:
+        - DB_URL=${DB_URL}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+    networks:
+      - my-api-net
+
+volumes:
+  postgres_db:
+    
+
+networks:
+  my-api-net:
